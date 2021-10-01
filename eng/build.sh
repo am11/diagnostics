@@ -169,7 +169,7 @@ while :; do
         break
     fi
 
-    lowerI="$(echo "$1" | tr "[:upper:]" "[:lower:]")"
+    lowerI="$(echo "${1//--/-/}" | tr "[:upper:]" "[:lower:]")"
     case "$lowerI" in
         -\?|-h|-help)
             usage
