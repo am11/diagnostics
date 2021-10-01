@@ -241,7 +241,7 @@ endif(CLR_CMAKE_PLATFORM_UNIX)
 target_link_libraries(sos ${SOS_LIBRARY})
 
 # add the install targets
-install_clr(sos)
+install_clr(TARGETS sos DESTINATIONS .)
 
 if(NOT WIN32)
   install(FILES sosdocsunix.txt DESTINATION .)

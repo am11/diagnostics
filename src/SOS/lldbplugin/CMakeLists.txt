@@ -159,4 +159,4 @@ add_library_clr(sosplugin SHARED ${SOURCES})
 target_link_libraries(sosplugin ${LIBRARIES})
 
 # add the install targets
-install_clr(sosplugin)
+install_clr(TARGETS sosplugin DESTINATIONS .)

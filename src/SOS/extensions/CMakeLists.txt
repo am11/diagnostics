@@ -28,4 +28,4 @@ else(CLR_CMAKE_PLATFORM_UNIX)
     add_definitions(-DHOST_WINDOWS)
 endif(CLR_CMAKE_PLATFORM_UNIX)
 
-_add_library(extensions STATIC ${SOURCES})
+add_library(extensions STATIC ${SOURCES})

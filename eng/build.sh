@@ -22,8 +22,9 @@ __HostArch=x64
 __BuildType=Debug
 __PortableBuild=1
 __ExtraCmakeArgs=""
-__ClangMajorVersion=0
-__ClangMinorVersion=0
+__Compiler=clang
+__CompilerMajorVersion=
+__CompilerMinorVersion=
 __NumProc=1
 __ManagedBuild=true
 __NativeBuild=true
@@ -164,12 +165,12 @@ case $OSName in
 esac
 
 while :; do
-    if [ $# -le 0 ]; then
+    if [[ "$#" -le 0 ]]; then
         break
     fi
-    # support both "--" and "-" options
-    opt="$(echo "${1/#--/-}" | awk '{print tolower($0)}')"
-    case $opt in
+
+    lowerI="$(echo "$1" | tr "[:upper:]" "[:lower:]")"
+    case "$lowerI" in
         -\?|-h|-help)
             usage
             exit 1
@@ -256,20 +257,29 @@ while :; do
             __ExtraCmakeArgs="$__ExtraCmakeArgs -DSTRIP_SYMBOLS=true"
             ;;
 
-        -clang*)
-            __Compiler=clang
-            # clangx.y or clang-x.y
-            version="$(echo "$1" | tr -d '[:alpha:]-=')"
-            parts=(${version//./ })
-            __ClangMajorVersion="${parts[0]}"
-            __ClangMinorVersion="${parts[1]}"
-            if [[ -z "$__ClangMinorVersion" && "$__ClangMajorVersion" -le 6 ]]; then
-                __ClangMinorVersion=0;
-            fi
+        clang*|-clang*)
+                __Compiler=clang
+                # clangx.y or clang-x.y
+                version="$(echo "$lowerI" | tr -d '[:alpha:]-=')"
+                parts=(${version//./ })
+                __CompilerMajorVersion="${parts[0]}"
+                __CompilerMinorVersion="${parts[1]}"
+                if [[ -z "$__CompilerMinorVersion" && "$__CompilerMajorVersion" -le 6 ]]; then
+                    __CompilerMinorVersion=0;
+                fi
             ;;
 
         -clean|-binarylog|-bl|-pipelineslog|-pl|-restore|-r|-rebuild|-pack|-integrationtest|-performancetest|-sign|-publish|-preparemachine)
             __ManagedBuildArgs="$__ManagedBuildArgs $1"
+            ;;
+
+        gcc*|-gcc*)
+                __Compiler=gcc
+                # gccx.y or gcc-x.y
+                version="$(echo "$lowerI" | tr -d '[:alpha:]-=')"
+                parts=(${version//./ })
+                __CompilerMajorVersion="${parts[0]}"
+                __CompilerMinorVersion="${parts[1]}"
             ;;
 
         -warnaserror|-nodereuse)
@@ -340,7 +350,7 @@ build_native()
 {
     platformArch="$1"
     intermediatesForBuild="$2"
-    extraCmakeArguments="$3"
+    cmakeArgs="$3"
 
     # All set to commence the build
     echo "Commencing $__DistroRid build for $__BuildOS.$__BuildArch.$__BuildType in $intermediatesForBuild"
@@ -350,10 +360,9 @@ build_native()
     buildTool="make"
     scriptDir="$__ProjectRoot/eng"
 
-    pushd "$intermediatesForBuild"
-    echo "Invoking \"$scriptDir/gen-buildsys-clang.sh\" \"$__ProjectRoot\" $__ClangMajorVersion \"$__ClangMinorVersion\" $platformArch "$scriptDir" $__BuildType $generator $extraCmakeArguments"
-    "$scriptDir/gen-buildsys-clang.sh" "$__ProjectRoot" $__ClangMajorVersion "$__ClangMinorVersion" $platformArch "$scriptDir" $__BuildType $generator "$extraCmakeArguments"
-    popd
+    nextCommand="\"$scriptDir/native/gen-buildsys.sh\" \"$__ProjectRoot\" \"$intermediatesForBuild\" $platformArch $__Compiler \"$__CompilerMajorVersion\" \"$__CompilerMinorVersion\" $__BuildType \"$generator\" $cmakeArgs"
+    echo "Invoking $nextCommand"
+    eval $nextCommand
 
     if [ ! -f "$intermediatesForBuild/$buildFile" ]; then
         echo "Failed to generate build project!"
@@ -407,20 +416,6 @@ fi
 initTargetDistroRid
 
 echo "RID: $__DistroRid"
-
-# Set default clang version
-if [[ $__ClangMajorVersion == 0 && $__ClangMinorVersion == 0 ]]; then
-   if [[ "$__BuildArch" == "arm" || "$__BuildArch" == "armel" ]]; then
-       __ClangMajorVersion=5
-       __ClangMinorVersion=0
-   elif [[ "$__BuildArch" == "arm64" && "$__DistroRid" == "linux-musl-arm64" ]]; then
-       __ClangMajorVersion=9
-       __ClangMinorVersion=
-   else
-       __ClangMajorVersion=3
-       __ClangMinorVersion=9
-   fi
-fi
 
 #
 # Setup LLDB paths for native build

@@ -29,4 +29,4 @@ else(CLR_CMAKE_PLATFORM_UNIX)
     add_definitions(-DHOST_WINDOWS)
 endif(CLR_CMAKE_PLATFORM_UNIX)
 
-_add_library(dbgutil STATIC ${DBGUTIL_SOURCES})
+add_library(dbgutil STATIC ${DBGUTIL_SOURCES})
