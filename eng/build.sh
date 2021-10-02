@@ -38,7 +38,7 @@ usage_list+=("-test: run xunit tests")
 handle_arguments() {
 
     case "$1" in
-        configuration|-c)
+        configuration|-configuration|-c)
             if [[ "$2" == "release" ]]; then
                 __BuildType=Release
             elif [[ "$2" = "checked" ]]; then
