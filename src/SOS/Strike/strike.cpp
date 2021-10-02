@@ -10896,7 +10896,7 @@ DECLARE_API(DumpGCData)
 }
 
 #ifdef FEATURE_PAL
-extern static char sccsid[];
+extern char sccsid[];
 #endif
 
 /**********************************************************************\
