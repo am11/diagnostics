@@ -16,9 +16,11 @@ include(eng/native/configurepaths.cmake)
 include(${CLR_ENG_NATIVE_DIR}/configurecompiler.cmake)
 
 # override some global configs
-add_compile_options(-Wno-unused-parameter)
-add_compile_options(-Wno-unused-variable)
-add_compile_options(-Wno-implicit-fallthrough)
+if (NOT WIN32)
+  add_compile_options(-Wno-unused-parameter)
+  add_compile_options(-Wno-unused-variable)
+  add_compile_options(-Wno-implicit-fallthrough)
+endif (NOT WIN32)
 
 # Register the default component
 set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME diagnostics)
