@@ -5,30 +5,30 @@
 # Obtain the location of the bash script to figure out where the root of the repo is.
 __RepoRootDir="$(cd "$(dirname "$0")"/..; pwd -P)"
 
-__TargetOS=Linux
-__HostOS=Linux
 __BuildArch=x64
-__HostArch=x64
 __BuildType=Debug
-__PortableBuild=1
-__ExtraCmakeArgs=
+__CommonMSBuildArgs=
 __Compiler=clang
 __CompilerMajorVersion=
 __CompilerMinorVersion=
-__NumProc=1
+__CrossBuild=0
+__DotnetRuntimeDownloadVersion="default"
+__DotnetRuntimeVersion="default"
+__ExtraCmakeArgs=
+__HostArch=x64
+__HostOS=Linux
 __ManagedBuild=1
 __NativeBuild=1
-__CrossBuild=false
-__Test=false
+__NumProc=1
+__PortableBuild=1
 __PrivateBuildPath=
-__TestArgs=
-__UnprocessedBuildArgs=
-__CommonMSBuildArgs=
-__DotnetRuntimeVersion="default"
-__DotnetRuntimeDownloadVersion="default"
 __RuntimeSourceFeed=
 __RuntimeSourceFeedKey=
 __SkipConfigure=0
+__TargetOS=Linux
+__Test=0
+__TestArgs=
+__UnprocessedBuildArgs=
 
 usage_list+=("-skipmanaged: do not build managed components.")
 usage_list+=("-skipnative: do not build native components.")
@@ -61,7 +61,7 @@ handle_arguments() {
             ;;
 
         test|-test)
-            __Test=true
+            __Test=1
             ;;
 
         *)
@@ -179,17 +179,17 @@ fi
 # Run xunit tests
 #
 
-if [ $__Test == true ]; then
-   if [ $__CrossBuild != true ]; then
-      if [ "$LLDB_PATH" == "" ]; then
+if [[ "$__Test" == 1 ]]; then
+   if [[ "$__CrossBuild" == 0 ]]; then
+      if [[ -z "$LLDB_PATH" ]]; then
           export LLDB_PATH="$(which lldb-3.9.1 2> /dev/null)"
-          if [ "$LLDB_PATH" == "" ]; then
+          if [[ -z "$LLDB_PATH" ]]; then
               export LLDB_PATH="$(which lldb-3.9 2> /dev/null)"
-              if [ "$LLDB_PATH" == "" ]; then
+              if [[ -z "$LLDB_PATH" ]]; then
                   export LLDB_PATH="$(which lldb-4.0 2> /dev/null)"
-                  if [ "$LLDB_PATH" == "" ]; then
+                  if [[ -z "$LLDB_PATH" ]]; then
                       export LLDB_PATH="$(which lldb-5.0 2> /dev/null)"
-                      if [ "$LLDB_PATH" == "" ]; then
+                      if [[ -z "$LLDB_PATH" ]]; then
                           export LLDB_PATH="$(which lldb 2> /dev/null)"
                       fi
                   fi
@@ -197,7 +197,7 @@ if [ $__Test == true ]; then
           fi
       fi
 
-      if [ "$GDB_PATH" == "" ]; then
+      if [[ -z "$GDB_PATH" ]]; then
           export GDB_PATH="$(which gdb 2> /dev/null)"
       fi
 
