@@ -117,7 +117,7 @@ jobs:
     # This is only required for cross builds.
     - ${{ if eq(parameters.crossbuild, false), eq(parameters.crossrootfsDir, '')) }}:
       - _Cross: ''
-    - ${{ if or(eq(parameters.crossbuild, '', ne(parameters.crossrootfsDir, '')) }}:
+    - ${{ if or(eq(parameters.crossbuild, true), ne(parameters.crossrootfsDir, '')) }}:
       - _Cross: -cross
 
     steps:
