@@ -13,6 +13,7 @@ parameters:
   dockerImage: ''
   # Optional: ROOTFS_DIR to use
   crossrootfsDir: ''
+  crossbuild: false
   # Optional: test only job if true
   testOnly: false
   buildAndSkipTest: false
@@ -114,9 +115,9 @@ jobs:
       - _HelixSource: pr/dotnet/arcade/$(Build.SourceBranch)
 
     # This is only required for cross builds.
-    - ${{ if eq(parameters.crossrootfsDir, '') }}:
+    - ${{ if eq(parameters.crossbuild, false), eq(parameters.crossrootfsDir, '')) }}:
       - _Cross: ''
-    - ${{ if ne(parameters.crossrootfsDir, '') }}:
+    - ${{ if or(eq(parameters.crossbuild, '', ne(parameters.crossrootfsDir, '')) }}:
       - _Cross: -cross
 
     steps:

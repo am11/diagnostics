@@ -175,7 +175,7 @@ stages:
       parameters:
         name: MacOS_cross
         osGroup: MacOS_cross
-        crossrootfsDir: '/tmp'
+        crossbuild: true
         buildAndSkipTest: true
         strategy:
           matrix:
