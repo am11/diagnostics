@@ -40,14 +40,15 @@ handle_arguments() {
 
     case "$1" in
         architecture|-architecture|-a)
-            BuildArch="${2,,}"
+            BuildArch="$(echo "$2" | tr "[:upper:]" "[:lower:]")"
             __ShiftArgs=1
             ;;
 
         configuration|-configuration|-c)
-            if [[ "${2,,}" == "release" ]]; then
+            _type="$(echo "$2" | tr "[:upper:]" "[:lower:]")"
+            if [[ "$_type" == "release" ]]; then
                 __BuildType=Release
-            elif [[ "${2,,}" = "checked" ]]; then
+            elif [[ "$_type" = "checked" ]]; then
                 __BuildType=Checked
             fi
 
