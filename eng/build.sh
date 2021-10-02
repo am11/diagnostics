@@ -85,6 +85,11 @@ __BinDir="$__RootBinDir/bin/$__ConfigTriplet"
 __ArtifactsIntermediatesDir="$__RootBinDir/obj"
 __IntermediatesDir="$__ArtifactsIntermediatesDir/$__ConfigTriplet"
 
+# Specify path to be set for CMAKE_INSTALL_PREFIX.
+# This is where all built CoreClr libraries will copied to.
+__CMakeBinDir="$__BinDir"
+export __CMakeBinDir
+
 mkdir -p "$__IntermediatesDir"
 mkdir -p "$__LogsDir"
 mkdir -p "$__CMakeBinDir"
