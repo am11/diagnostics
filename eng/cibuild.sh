@@ -45,7 +45,7 @@ if [ "$__osname" == "Linux" ]; then
     #             00:00.136: <END_COMMAND_ERROR>
     #System.Exception: 'process launch -s' FAILED
     #
-    # so we will keep using old image for now and upgrade cmake in-place as a workaround instead..
+    # so we will keep using old image for now and install newer cmake as a workaround instead..
     # FIXME: delete this comment and the next `if` block once centos image is upgraded.
     if [ "$ID" = "centos" ]; then
         # upgrade cmake
