@@ -42,6 +42,15 @@ set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 # Where the version source file for xplat is generated
 set(VERSION_FILE_PATH "${CMAKE_BINARY_DIR}/version.c")
 
+if (NOT WIN32)
+  # Drop the static scope for SOS, so it's available outside the
+  # compilation unit for external linkage; see extern declaration
+  # in SOS sources.
+  file(READ "${VERSION_FILE_PATH}" VERSION_FILE_CONTENTS)
+  string(REPLACE "static char[]" "char[]" VERSION_FILE_NEW_CONTENTS "${VERSION_FILE_CONTENTS}")
+  file(WRITE "${VERSION_FILE_PATH}" VERSION_FILE_NEW_CONTENTS)
+endif (NOT WIN32)
+
 # Where _version.h for Windows is generated
 if (WIN32)
 include_directories("${CMAKE_BINARY_DIR}")
