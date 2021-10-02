@@ -36,28 +36,32 @@ if [ "$__osname" == "Linux" ]; then
         fi
     fi
 
-    # We are running old (2019) centos image in CI in diagnostics repo. using 2021 image was failing SOS tests
-    # which rely on lldb REPL and ptrace etc. From test attachment logs:
+    # We are running old (2019) centos image in CI in diagnostics repo with old cmake (2.8).
+    # Upgrading to 2021 centos image was failing SOS tests which rely on lldb REPL and ptrace etc.
+    # e.g. from test attachment logs:
+    #
     #             00:00.136: error: process launch failed: 'A' packet returned an error: 8
     #             00:00.136:
     #             00:00.136: <END_COMMAND_ERROR>
     #System.Exception: 'process launch -s' FAILED
     #
-    # so we upgrade cmake in-place as a workaround..
+    # so we will keep using old image for now and upgrade cmake in-place as a workaround instead..
     # FIXME: delete this comment and the next `if` block once centos image is upgraded.
     if [ "$ID" = "centos" ]; then
         # upgrade cmake
         requiredversion=3.6.2
-        cmakeversion="$(cmake --version)"
+        cmakeversion="$(cmake --version | head -1)"
         currentversion="${cmakeversion##* }"
         if ! printf '%s\n' "$requiredversion" "$currentversion" | sort --version-sort --check 2>/dev/null; then
-            echo "Old cmake version found: $currentversion, minimal requirement is 3.6.2. Upgrading to 3.15.5"
-            curl -SL -o cmake-install.sh https://github.com/Kitware/CMake/releases/download/v3.15.5/cmake-3.15.5-Linux-$(uname -m).sh
-            bash ./cmake-install.sh --skip-license --exclude-subdir --prefix=/usr/local
-            rm ./cmake-install.sh
-            cmakeversion="$(cmake --version)"
+            echo "Old cmake version found: $currentversion, minimal requirement is $requiredversion. Upgrading to 3.15.5 .."
+            curl -SL -o /tmp/cmake-install.sh https://github.com/Kitware/CMake/releases/download/v3.15.5/cmake-3.15.5-Linux-$(uname -m).sh
+            mkdir "$HOME/.cmake"
+            bash /tmp/cmake-install.sh --skip-license --exclude-subdir --prefix="$HOME/.cmake"
+            PATH="$HOME/.cmake/bin:$PATH"
+            export PATH
+            cmakeversion="$(cmake --version | head -1)"
             newversion="${cmakeversion##* }"
-            echo "New cmake version is: $cmakeversion"
+            echo "New cmake version is: $newversion"
        fi
     fi
 fi
