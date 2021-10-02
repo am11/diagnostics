@@ -40,7 +40,7 @@ endif (WIN32)
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Where the version source file for xplat is generated
-set(VERSION_FILE_PATH "${CMAKE_BINARY_DIR}/version.cpp")
+set(VERSION_FILE_PATH "${CMAKE_BINARY_DIR}/version.c")
 
 # Where _version.h for Windows is generated
 if (WIN32)
