@@ -16,12 +16,20 @@ include(eng/native/configurepaths.cmake)
 include(${CLR_ENG_NATIVE_DIR}/configurecompiler.cmake)
 
 # override some global configs
-if (NOT WIN32)
+if (MSVC)
+    add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:/wd4996>)
+    add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:/wd4267>)
+    add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:/wd4018>)
+    add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:/wd4200>)
+    add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:/wd4244>)
+    # Host components don't try to handle asynchronous exceptions
+    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:/EHsc>)
+else (MSVC)
   add_compile_options(-Wno-unused-parameter)
   add_compile_options(-Wno-unused-variable)
   add_compile_options(-Wno-implicit-fallthrough)
   add_compile_options(-fvisibility=default)
-endif (NOT WIN32)
+endif (MSVC)
 
 # Register the default component
 set(CMAKE_INSTALL_DEFAULT_COMPONENT_NAME diagnostics)
