@@ -162,7 +162,7 @@ fi
 # Build native components
 #
 if [[ "$__NativeBuild" == 1 ]]; then
-    build_native "$__TargetOS" "$__BuildArch" "$__RepoRootDir" "$__IntermediatesDir" "install" "$__ExtraCmakeArgs" "diagnostic component"
+    build_native "$__TargetOS" "$__BuildArch" "$__RepoRootDir" "$__IntermediatesDir" "install" "$__ExtraCmakeArgs" "diagnostic component" | tee "$__LogsDir"/make.log
 fi
 
 #
