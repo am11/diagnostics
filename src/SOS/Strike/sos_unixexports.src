@@ -49,6 +49,7 @@ logging
 Name2EE
 PrintException
 PathTo
+sccsid
 StopOnCatch
 SetClrPath
 SetSymbolServer
