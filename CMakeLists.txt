@@ -41,6 +41,14 @@ if (WIN32)
 include_directories("${CMAKE_BINARY_DIR}")
 endif (WIN32)
 
+set(CORECLR_SET_RPATH ON)
+if(CORECLR_SET_RPATH)
+    # Enable @rpath support for shared libraries.
+    set(MACOSX_RPATH ON)
+endif(CORECLR_SET_RPATH)
+
+OPTION(CLR_CMAKE_ENABLE_CODE_COVERAGE "Enable code coverage" OFF)
+
 #--------------------------------------
 # FEATURE Defines
 #--------------------------------------
