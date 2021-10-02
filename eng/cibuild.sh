@@ -35,6 +35,21 @@ if [ "$__osname" == "Linux" ]; then
             source scl_source enable python27 devtoolset-2
         fi
     fi
+
+    if [ "$ID" = "centos" ]; then
+        # upgrade cmake
+        requiredversion=3.6.2
+        cmakeversion="$(cmake --version)"
+        currentversion="${cmakeversion##* }"
+        if ! printf '%s\n' "$requiredversion" "$currentversion" | sort --version-sort --check 2>/devnull; then
+            echo "Old cmake version found: $cmakeversion, minimal requirement is 3.6.2. Uupgrading to 3.15.5"
+            curl -SLO https://github.com/Kitware/CMake/releases/download/v3.15.5/cmake-3.15.5-Linux-$(uname -m).sh
+            bash ./cmake-install.sh --skip-license --exclude-subdir --prefix=/usr/local
+            rm ./cmake-install.sh
+            cmakeversion="$(cmake --version)"
+            newversion="${cmakeversion##* }"
+            echo "New cmake version is: $cmakeversion"
+       fi
 fi
 
 "$scriptroot/build.sh" --restore --prepareMachine --ci --stripsymbols $@
