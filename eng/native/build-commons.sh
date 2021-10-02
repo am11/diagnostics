@@ -172,12 +172,6 @@ EOF
             fi
         fi
 
-        # Drop the static scope for SOS, so it's available outside the
-        # compilation unit for external linkage; see extern declaration
-        # in SOS sources.
-        contents="$(cat  "$__versionSourceFile")"
-        echo "${contents//static char/char}" > "$__versionSourceFile"
-
         if [[ "$__StaticAnalyzer" == 1 ]]; then
             scan_build=scan-build
         fi
