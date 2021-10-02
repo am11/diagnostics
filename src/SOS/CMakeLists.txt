@@ -8,8 +8,8 @@ endif(CLR_CMAKE_PLATFORM_UNIX)
 # lldbplugin doesn't build with these options
 if(WIN32)
   message(STATUS "CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION: ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}")
-  set(ProgramFilesX86 "ProgramFiles(x86)")
-  include_directories("$ENV{${ProgramFilesX86}}/Windows Kits/10/Include/${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}")
+  #set(ProgramFilesX86 "ProgramFiles(x86)")
+  #include_directories("$ENV{${ProgramFilesX86}}/Windows Kits/10/Include/${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}")
 
   message(STATUS "VSInstallDir: $ENV{VSInstallDir}")
   include_directories("$ENV{VSInstallDir}/DIA SDK/include")
