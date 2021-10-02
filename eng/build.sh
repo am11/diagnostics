@@ -74,7 +74,7 @@ source "$__RepoRootDir"/eng/native/build-commons.sh
 
 __RootBinDir="$__RepoRootDir"/artifacts
 __BinDir="$__RootBinDir/bin/$__TargetOS.$__BuildArch.$__BuildType"
-__LogDir="$__RootBinDir/log/$__TargetOS.$__BuildArch.$__BuildType"
+__LogsDir="$__RootBinDir/log/$__TargetOS.$__BuildArch.$__BuildType"
 __IntermediatesDir="$__RootBinDir/obj/$__TargetOS.$__BuildArch.$__BuildType"
 __ExtraCmakeArgs="$__ExtraCmakeArgs -DCLR_MANAGED_BINARY_DIR=$__RootBinDir/bin -DCLR_BUILD_TYPE=$__BuildType"
 __DotNetCli="$__RepoRootDir"/.dotnet/dotnet
@@ -150,7 +150,7 @@ if [ ! -e $__DotNetCli ]; then
 fi
 
 mkdir -p "$__IntermediatesDir"
-mkdir -p "$__LogDir"
+mkdir -p "$__LogsDir"
 mkdir -p "$__CMakeBinDir"
 
 if [[ "$__NativeBuild" == 1 ]]; then
@@ -206,7 +206,7 @@ if [[ "$__Test" == 1 ]]; then
       "$__RepoRootDir/eng/common/build.sh" \
         --test \
         --configuration "$__BuildType" \
-        /bl:$__LogDir/Test.binlog \
+        /bl:$__LogsDir/Test.binlog \
         /p:BuildArch="$__BuildArch" \
         /p:PrivateBuildPath="$__PrivateBuildPath" \
         /p:DotnetRuntimeVersion="$__DotnetRuntimeVersion" \
