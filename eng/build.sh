@@ -77,6 +77,10 @@ __IntermediatesDir="$__RootBinDir/obj/$__TargetOS.$__BuildArch.$__BuildType"
 __ExtraCmakeArgs="$__ExtraCmakeArgs -DCLR_MANAGED_BINARY_DIR=$__RootBinDir/bin -DCLR_BUILD_TYPE=$__BuildType"
 __DotNetCli="$__RepoRootDir"/.dotnet/dotnet
 
+mkdir -p "$__IntermediatesDir"
+mkdir -p "$__LogsDir"
+mkdir -p "$__CMakeBinDir"
+
 source "$__RepoRootDir"/eng/native/build-commons.sh
 
 # Specify path to be set for CMAKE_INSTALL_PREFIX.
@@ -144,14 +148,10 @@ fi
 # Build native components
 #
 
-if [ ! -e $__DotNetCli ]; then
+if [ ! -e "$__DotNetCli" ]; then
    echo "dotnet cli not installed $__DotNetCli"
    exit 1
 fi
-
-mkdir -p "$__IntermediatesDir"
-mkdir -p "$__LogsDir"
-mkdir -p "$__CMakeBinDir"
 
 if [[ "$__NativeBuild" == 1 ]]; then
     build_native "$__TargetOS" "$__BuildArch" "$__RepoRootDir" "$__IntermediatesDir" "install" "$__ExtraCmakeArgs" "diagnostic component"
