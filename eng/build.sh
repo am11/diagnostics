@@ -70,14 +70,14 @@ handle_arguments() {
     esac
 }
 
-source "$__RepoRootDir"/eng/native/build-commons.sh
-
 __RootBinDir="$__RepoRootDir"/artifacts
 __BinDir="$__RootBinDir/bin/$__TargetOS.$__BuildArch.$__BuildType"
 __LogsDir="$__RootBinDir/log/$__TargetOS.$__BuildArch.$__BuildType"
 __IntermediatesDir="$__RootBinDir/obj/$__TargetOS.$__BuildArch.$__BuildType"
 __ExtraCmakeArgs="$__ExtraCmakeArgs -DCLR_MANAGED_BINARY_DIR=$__RootBinDir/bin -DCLR_BUILD_TYPE=$__BuildType"
 __DotNetCli="$__RepoRootDir"/.dotnet/dotnet
+
+source "$__RepoRootDir"/eng/native/build-commons.sh
 
 # Specify path to be set for CMAKE_INSTALL_PREFIX.
 # This is where all built native libraries will copied to.
