@@ -172,6 +172,11 @@ EOF
             fi
         fi
 
+        # Drop the static scope for SOS, so it's available outside the
+        # compilation for external linkage; see extern declaration in SOS.
+        contents="$(cat  artifacts/obj/Linux.x64.Debug/version.c)"
+        echo "${contents//static char/char}" > "$__versionSourceLine"
+
         if [[ "$__StaticAnalyzer" == 1 ]]; then
             scan_build=scan-build
         fi
