@@ -14,7 +14,7 @@ __CompilerMinorVersion=
 __CrossBuild=0
 __DotnetRuntimeDownloadVersion="default"
 __DotnetRuntimeVersion="default"
-__CMakeArgs=
+__ExtraCmakeArgs=
 __HostArch=x64
 __HostOS=Linux
 __ManagedBuild=1
@@ -82,10 +82,14 @@ source "$__RepoRootDir"/eng/native/build-commons.sh
 __LogsDir="$__RootBinDir/log/$__BuildType"
 __ConfigTriplet="$__TargetOS.$__BuildArch.$__BuildType"
 __BinDir="$__RootBinDir/bin/$__ConfigTriplet"
-__ArtifactsIntermediatesDir="$__RepoRootDir/artifacts/obj"
+__ArtifactsIntermediatesDir="$__RootBinDir/obj"
 __IntermediatesDir="$__ArtifactsIntermediatesDir/$__ConfigTriplet"
 
-__CMakeArgs="$__CMakeArgs -DCLR_MANAGED_BINARY_DIR=$__RootBinDir/bin -DCLR_BUILD_TYPE=$__BuildType"
+mkdir -p "$__IntermediatesDir"
+mkdir -p "$__LogsDir"
+mkdir -p "$__CMakeBinDir"
+
+__ExtraCmakeArgs="$__ExtraCmakeArgs -DCLR_MANAGED_BINARY_DIR=$__RootBinDir/bin -DCLR_BUILD_TYPE=$__BuildType"
 
 # Specify path to be set for CMAKE_INSTALL_PREFIX.
 # This is where all built native libraries will copied to.
@@ -139,9 +143,9 @@ if [ "$__HostOS" == "OSX" ]; then
     python --version
 
     if [[ "$__BuildArch" == x64 ]]; then
-        __CMakeArgs="-DCMAKE_OSX_ARCHITECTURES=\"x86_64\" $__CMakeArgs"
+        __ExtraCmakeArgs="-DCMAKE_OSX_ARCHITECTURES=\"x86_64\" $__ExtraCmakeArgs"
     elif [[ "$__BuildArch" == arm64 ]]; then
-        __CMakeArgs="-DCMAKE_OSX_ARCHITECTURES=\"arm64\" $__CMakeArgs"
+        __ExtraCmakeArgs="-DCMAKE_OSX_ARCHITECTURES=\"arm64\" $__ExtraCmakeArgs"
     else
         echo "Error: Unknown OSX architecture $__BuildArch."
         exit 1
@@ -152,7 +156,7 @@ fi
 # Build native components
 #
 if [[ "$__NativeBuild" == 1 ]]; then
-    build_native "$__TargetOS" "$__BuildArch" "$__RepoRootDir" "$__IntermediatesDir" "install" "$__CMakeArgs" "diagnostic component"
+    build_native "$__TargetOS" "$__BuildArch" "$__RepoRootDir" "$__IntermediatesDir" "install" "$__ExtraCmakeArgs" "diagnostic component"
 fi
 
 #

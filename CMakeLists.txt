@@ -42,6 +42,8 @@ set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 # Where the version source file for xplat is generated
 set(VERSION_FILE_PATH "${CMAKE_BINARY_DIR}/version.c")
 
+message(FATAL_ERROR ">>> ${VERSION_FILE_PATH}")
+
 if (NOT WIN32)
   # Drop the static scope for SOS, so it's available outside the
   # compilation unit for external linkage; see extern declaration
