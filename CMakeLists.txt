@@ -47,8 +47,9 @@ if (NOT WIN32)
   # compilation unit for external linkage; see extern declaration
   # in SOS sources.
   file(READ "${VERSION_FILE_PATH}" VERSION_FILE_CONTENTS)
-  string(REPLACE "static char" "char" VERSION_FILE_NEW_CONTENTS "${VERSION_FILE_CONTENTS}")
-  file(WRITE "${VERSION_FILE_PATH}" "${VERSION_FILE_NEW_CONTENTS}")
+  string(REPLACE "static char" "char" VERSION_LINE_WITHOUT_STATIC "${VERSION_FILE_CONTENTS}")
+  string(REPLACE " sccsid[]" " _sccsid[]" VERSION_LINE_STATIC_SCCSID "${VERSION_FILE_CONTENTS}")
+  file(WRITE "${VERSION_FILE_PATH}" "${VERSION_LINE_WITHOUT_STATIC}${VERSION_LINE_STATIC_SCCSID}")
 endif (NOT WIN32)
 
 # Where _version.h for Windows is generated
