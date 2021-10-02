@@ -1,9 +1,9 @@
-if(CLR_CMAKE_PLATFORM_UNIX)
+if(CLR_CMAKE_HOST_UNIX)
     include_directories(${ROOT_DIR}/src/pal/inc)
     include_directories(${ROOT_DIR}/src/pal/inc/rt)
 
     add_subdirectory(lldbplugin)
-endif(CLR_CMAKE_PLATFORM_UNIX)
+endif(CLR_CMAKE_HOST_UNIX)
 
 # lldbplugin doesn't build with these options
 if(WIN32)
@@ -28,7 +28,7 @@ add_subdirectory(dbgutil)
 add_subdirectory(SOS.Extensions)
 add_subdirectory(Strike)
 
-if(CLR_CMAKE_PLATFORM_UNIX)
+if(CLR_CMAKE_HOST_UNIX)
   add_compile_options(-fPIC)
 
   # Include the dummy c++ include files
@@ -36,6 +36,6 @@ if(CLR_CMAKE_PLATFORM_UNIX)
 
   # This prevents inclusion of standard C compiler headers
   add_compile_options(-nostdinc)
-endif(CLR_CMAKE_PLATFORM_UNIX)
+endif(CLR_CMAKE_HOST_UNIX)
 
 add_subdirectory(debugshim)

@@ -1,7 +1,7 @@
-if(CLR_CMAKE_PLATFORM_UNIX)
+if(CLR_CMAKE_HOST_UNIX)
     include_directories(${ROOT_DIR}/src/pal/inc)
     include_directories(${ROOT_DIR}/src/pal/inc/rt)
-endif(CLR_CMAKE_PLATFORM_UNIX)
+endif(CLR_CMAKE_HOST_UNIX)
 
 set( CORGUIDS_IDL_SOURCES
   cordebug.idl
