@@ -66,7 +66,7 @@ if [ "$__osname" == "Linux" ]; then
     fi
 fi
 
-"$scriptroot/build.sh" -restore -prepareMachine -ci -stripsymbols $@
+"$scriptroot/build.sh" -restore -prepareMachine -ci $@
 if [[ $? != 0 ]]; then
     exit 1
 fi
