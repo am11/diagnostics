@@ -79,15 +79,6 @@ else ()
   clr_unknown_arch()
 endif ()
 
-if (CLR_CMAKE_HOST_UNIX)
-  add_definitions(-DPLATFORM_UNIX=1)
-elseif (WIN32)
-  # Define the CRT lib references that link into Desktop imports
-  set(STATIC_MT_CRT_LIB  "libcmt$<$<OR:$<CONFIG:Debug>,$<CONFIG:Checked>>:d>.lib")
-  set(STATIC_MT_VCRT_LIB  "libvcruntime$<$<OR:$<CONFIG:Debug>,$<CONFIG:Checked>>:d>.lib")
-  set(STATIC_MT_CPP_LIB  "libcpmt$<$<OR:$<CONFIG:Debug>,$<CONFIG:Checked>>:d>.lib")
-endif(CLR_CMAKE_HOST_UNIX)
-
 if (CLR_CMAKE_TARGET_ARCH_AMD64)
   if (CLR_CMAKE_HOST_UNIX)
     add_definitions(-DDBG_TARGET_AMD64_UNIX)
@@ -152,6 +143,7 @@ endif(WIN32)
 add_definitions(-DFEATURE_CORESYSTEM)
 
 if(CLR_CMAKE_HOST_UNIX)
+    add_definitions(-DPLATFORM_UNIX=1)
     add_definitions(-DFEATURE_PAL)
     add_definitions(-DFEATURE_PAL_ANSI)
 endif(CLR_CMAKE_HOST_UNIX)
@@ -176,11 +168,6 @@ endif (CLR_CMAKE_HOST_UNIX_AMD64)
 if(CLR_CMAKE_HOST_UNIX AND CLR_CMAKE_TARGET_ARCH_AMD64)
     add_definitions(-DUNIX_AMD64_ABI)
 endif(CLR_CMAKE_HOST_UNIX AND CLR_CMAKE_TARGET_ARCH_AMD64)
-
-#--------------------------------------
-# Compile Options
-#--------------------------------------
-include(compileoptions.cmake)
 
 #-----------------------------------------
 # Native Projects
