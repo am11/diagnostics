@@ -115,11 +115,10 @@ jobs:
 
     # This is only required for cross builds.
     - ${{ if eq(parameters.crossrootfsDir, '') }}:
-      - _RootFs: ''
       - _Cross: ''
     - ${{ if ne(parameters.crossrootfsDir, '') }}:
-      - _RootFs: ROOTFS_DIR=${{ parameters.crossrootfsDir }}
       - _Cross: '-cross'
+
     steps:
     - ${{ if eq(parameters.osGroup, 'Linux') }}:
       - ${{ if eq(parameters.testOnly, 'true') }}:
@@ -140,7 +139,7 @@ jobs:
     - ${{ if eq(parameters.osGroup, 'MacOS_cross') }}:
       - script: /bin/bash -c "sudo xcode-select -s /Applications/Xcode_12.2.app/Contents/Developer"
 
-    - script: $(_dockerEnv) -e ${_RootFs} $(_buildScript)
+    - script: $(_dockerEnv) $(_buildScript)
         -configuration $(_BuildConfig) 
         -architecture $(_BuildArch)
         $(_TestArgs)
@@ -149,6 +148,8 @@ jobs:
         $(_InternalInstallArgs)
       displayName: Build / Test
       condition: succeeded()
+      env:
+        ROOTFS_DIR: ${{ parameters.crossrootfsDir }}
 
     - ${{ if ne(variables['System.TeamProject'], 'public') }}:
       - task: CopyFiles@2
