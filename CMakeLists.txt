@@ -17,13 +17,8 @@ include(${CLR_ENG_NATIVE_DIR}/configurecompiler.cmake)
 
 # override some global configs
 if (MSVC)
-    add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:/wd4996>)
-    add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:/wd4267>)
-    add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:/wd4018>)
-    add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:/wd4200>)
-    add_compile_options($<$<COMPILE_LANGUAGE:C,CXX>:/wd4244>)
-    # Host components don't try to handle asynchronous exceptions
-    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:/EHsc>)
+  add_compile_options(/wd4960 /wd4961 /wd4603 /wd4627 /wd4838 /wd4456 /wd4457 /wd4458 /wd4459 /wd4091 /we4640)
+  add_compile_options($<$<COMPILE_LANGUAGE:CXX>:/EHsc>)
 else (MSVC)
   add_compile_options(-Wno-unused-parameter)
   add_compile_options(-Wno-unused-variable)
