@@ -36,14 +36,23 @@ if [ "$__osname" == "Linux" ]; then
         fi
     fi
 
+    # We are running old (2019) centos image in CI in diagnostics repo. using 2021 image was failing SOS tests
+    # which rely on lldb REPL and ptrace etc. From test attachment logs:
+    #             00:00.136: error: process launch failed: 'A' packet returned an error: 8
+    #             00:00.136:
+    #             00:00.136: <END_COMMAND_ERROR>
+    #System.Exception: 'process launch -s' FAILED
+    #
+    # so we upgrade cmake in-place as a workaround..
+    # FIXME: delete this comment and the next `if` block once centos image is upgraded.
     if [ "$ID" = "centos" ]; then
         # upgrade cmake
         requiredversion=3.6.2
         cmakeversion="$(cmake --version)"
         currentversion="${cmakeversion##* }"
-        if ! printf '%s\n' "$requiredversion" "$currentversion" | sort --version-sort --check 2>/devnull; then
-            echo "Old cmake version found: $currentversion, minimal requirement is 3.6.2. Uupgrading to 3.15.5"
-            curl -SLO https://github.com/Kitware/CMake/releases/download/v3.15.5/cmake-3.15.5-Linux-$(uname -m).sh
+        if ! printf '%s\n' "$requiredversion" "$currentversion" | sort --version-sort --check 2>/dev/null; then
+            echo "Old cmake version found: $currentversion, minimal requirement is 3.6.2. Upgrading to 3.15.5"
+            curl -SL -o cmake-install.sh https://github.com/Kitware/CMake/releases/download/v3.15.5/cmake-3.15.5-Linux-$(uname -m).sh
             bash ./cmake-install.sh --skip-license --exclude-subdir --prefix=/usr/local
             rm ./cmake-install.sh
             cmakeversion="$(cmake --version)"
