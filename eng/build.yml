@@ -117,7 +117,7 @@ jobs:
     - ${{ if eq(parameters.crossrootfsDir, '') }}:
       - _Cross: ''
     - ${{ if ne(parameters.crossrootfsDir, '') }}:
-      - _Cross: '-cross'
+      - _Cross: -cross
 
     steps:
     - ${{ if eq(parameters.osGroup, 'Linux') }}:
@@ -142,8 +142,8 @@ jobs:
     - script: $(_dockerEnv) $(_buildScript)
         -configuration $(_BuildConfig) 
         -architecture $(_BuildArch)
-        $(_TestArgs)
         $(_Cross)
+        $(_TestArgs)
         /p:OfficialBuildId=$(BUILD.BUILDNUMBER)
         $(_InternalInstallArgs)
       displayName: Build / Test
