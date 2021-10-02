@@ -36,9 +36,9 @@ if [ "$__osname" == "Linux" ]; then
         fi
     fi
 
-    # We are running old (2019) centos image in CI in diagnostics repo with old cmake (2.8).
-    # Upgrading to 2021 centos image was failing SOS tests which rely on lldb REPL and ptrace etc.
-    # e.g. from test attachment logs:
+    # We are using old (2019) centos image in the CI with old cmake (2.8).
+    # Upgrading to 2021 centos image was failing SOS tests which rely on
+    # lldb REPL and ptrace etc. e.g. from test attachment logs:
     #
     #             00:00.136: error: process launch failed: 'A' packet returned an error: 8
     #             00:00.136:
