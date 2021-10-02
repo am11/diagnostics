@@ -50,6 +50,7 @@ if [ "$__osname" == "Linux" ]; then
             newversion="${cmakeversion##* }"
             echo "New cmake version is: $cmakeversion"
        fi
+    fi
 fi
 
 "$scriptroot/build.sh" --restore --prepareMachine --ci --stripsymbols $@
