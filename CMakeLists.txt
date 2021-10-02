@@ -20,6 +20,7 @@ if (NOT WIN32)
   add_compile_options(-Wno-unused-parameter)
   add_compile_options(-Wno-unused-variable)
   add_compile_options(-Wno-implicit-fallthrough)
+  add_compile_options(-fvisibility=default)
 endif (NOT WIN32)
 
 # Register the default component
@@ -41,8 +42,11 @@ if (WIN32)
 include_directories("${CMAKE_BINARY_DIR}")
 endif (WIN32)
 
-set(CMAKE_MACOSX_RPATH ON)
 set(CORECLR_SET_RPATH ON)
+if(CORECLR_SET_RPATH)
+  # Enable @rpath support for shared libraries.
+  set(MACOSX_RPATH ON)
+endif(CORECLR_SET_RPATH)
 
 OPTION(CLR_CMAKE_ENABLE_CODE_COVERAGE "Enable code coverage" OFF)
 OPTION(CLR_CMAKE_WARNINGS_ARE_ERRORS "Warnings are errors" ON)
