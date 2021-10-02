@@ -54,7 +54,7 @@ if [ "$__osname" == "Linux" ]; then
         currentversion="${cmakeversion##* }"
         if ! printf '%s\n' "$requiredversion" "$currentversion" | sort --version-sort --check 2>/dev/null; then
             echo "Old cmake version found: $currentversion, minimal requirement is $requiredversion. Upgrading to 3.15.5 .."
-            curl -SL -o /tmp/cmake-install.sh https://github.com/Kitware/CMake/releases/download/v3.15.5/cmake-3.15.5-Linux-$(uname -m).sh
+            curl -sSL -o /tmp/cmake-install.sh https://github.com/Kitware/CMake/releases/download/v3.15.5/cmake-3.15.5-Linux-$(uname -m).sh
             mkdir "$HOME/.cmake"
             bash /tmp/cmake-install.sh --skip-license --exclude-subdir --prefix="$HOME/.cmake"
             PATH="$HOME/.cmake/bin:$PATH"
