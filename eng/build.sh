@@ -14,7 +14,7 @@ __CompilerMinorVersion=
 __CrossBuild=0
 __DotnetRuntimeDownloadVersion="default"
 __DotnetRuntimeVersion="default"
-__ExtraCmakeArgs=
+__CMakeArgs=
 __HostArch=x64
 __HostOS=Linux
 __ManagedBuild=1
@@ -22,6 +22,7 @@ __NativeBuild=1
 __NumProc=1
 __PortableBuild=1
 __PrivateBuildPath=
+__RootBinDir="$__RepoRootDir"/artifacts
 __RuntimeSourceFeed=
 __RuntimeSourceFeedKey=
 __SkipConfigure=0
@@ -75,18 +76,16 @@ handle_arguments() {
     esac
 }
 
-__RootBinDir="$__RepoRootDir"/artifacts
-__BinDir="$__RootBinDir/bin/$__TargetOS.$__BuildArch.$__BuildType"
-__LogsDir="$__RootBinDir/log/$__TargetOS.$__BuildArch.$__BuildType"
-__IntermediatesDir="$__RootBinDir/obj/$__TargetOS.$__BuildArch.$__BuildType"
-__ExtraCmakeArgs="$__ExtraCmakeArgs -DCLR_MANAGED_BINARY_DIR=$__RootBinDir/bin -DCLR_BUILD_TYPE=$__BuildType"
-__DotNetCli="$__RepoRootDir"/.dotnet/dotnet
-
-mkdir -p "$__IntermediatesDir"
-mkdir -p "$__LogsDir"
-mkdir -p "$__CMakeBinDir"
-
 source "$__RepoRootDir"/eng/native/build-commons.sh
+
+
+__LogsDir="$__RootBinDir/log/$__BuildType"
+__ConfigTriplet="$__TargetOS.$__BuildArch.$__BuildType"
+__BinDir="$__RootBinDir/bin/$__ConfigTriplet"
+__ArtifactsIntermediatesDir="$__RepoRootDir/artifacts/obj"
+__IntermediatesDir="$__ArtifactsIntermediatesDir/$__ConfigTriplet"
+
+__CMakeArgs="$__CMakeArgs -DCLR_MANAGED_BINARY_DIR=$__RootBinDir/bin -DCLR_BUILD_TYPE=$__BuildType"
 
 # Specify path to be set for CMAKE_INSTALL_PREFIX.
 # This is where all built native libraries will copied to.
@@ -140,9 +139,9 @@ if [ "$__HostOS" == "OSX" ]; then
     python --version
 
     if [[ "$__BuildArch" == x64 ]]; then
-        __ExtraCmakeArgs="-DCMAKE_OSX_ARCHITECTURES=\"x86_64\" $__ExtraCmakeArgs"
+        __CMakeArgs="-DCMAKE_OSX_ARCHITECTURES=\"x86_64\" $__CMakeArgs"
     elif [[ "$__BuildArch" == arm64 ]]; then
-        __ExtraCmakeArgs="-DCMAKE_OSX_ARCHITECTURES=\"arm64\" $__ExtraCmakeArgs"
+        __CMakeArgs="-DCMAKE_OSX_ARCHITECTURES=\"arm64\" $__CMakeArgs"
     else
         echo "Error: Unknown OSX architecture $__BuildArch."
         exit 1
@@ -152,14 +151,8 @@ fi
 #
 # Build native components
 #
-
-if [ ! -e "$__DotNetCli" ]; then
-   echo "dotnet cli not installed $__DotNetCli"
-   exit 1
-fi
-
 if [[ "$__NativeBuild" == 1 ]]; then
-    build_native "$__TargetOS" "$__BuildArch" "$__RepoRootDir" "$__IntermediatesDir" "install" "$__ExtraCmakeArgs" "diagnostic component"
+    build_native "$__TargetOS" "$__BuildArch" "$__RepoRootDir" "$__IntermediatesDir" "install" "$__CMakeArgs" "diagnostic component"
 fi
 
 #
