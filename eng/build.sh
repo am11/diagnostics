@@ -33,7 +33,6 @@ __SkipGenerateVersion=0
 __StaticLibLink=1
 __TargetOS=Linux
 __Test=0
-__TestArgs=
 __UnprocessedBuildArgs=
 
 usage_list+=("-skipmanaged: do not build managed components.")
@@ -131,7 +130,7 @@ fi
 
 if [[ "$__ManagedBuild" == 1 ]]; then
     echo "Commencing managed build for $__BuildType in $__RootBinDir/bin"
-    "$__RepoRootDir/eng/common/build.sh" --build --configuration "$__BuildType" "$__CommonMSBuildArgs" $__ManagedBuildArgs $__UnprocessedBuildArgs
+    "$__RepoRootDir/eng/common/build.sh" --build --configuration "$__BuildType" $__CommonMSBuildArgs $__ManagedBuildArgs $__UnprocessedBuildArgs
     if [ "$?" != 0 ]; then
         exit 1
     fi
@@ -239,8 +238,7 @@ if [[ "$__Test" == 1 ]]; then
         /p:DotnetRuntimeDownloadVersion="$__DotnetRuntimeDownloadVersion" \
         /p:RuntimeSourceFeed="$__RuntimeSourceFeed" \
         /p:RuntimeSourceFeedKey="$__RuntimeSourceFeedKey" \
-        "$__CommonMSBuildArgs" \
-        "$__TestArgs"
+        $__CommonMSBuildArgs
 
       if [ $? != 0 ]; then
           exit 1
