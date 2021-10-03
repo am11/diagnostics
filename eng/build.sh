@@ -7,6 +7,7 @@ __RepoRootDir="$(cd "$(dirname "$0")"/..; pwd -P)"
 
 __BuildArch=x64
 __BuildType=Debug
+__CMakeArgs=
 __CommonMSBuildArgs=
 __Compiler=clang
 __CompilerMajorVersion=
@@ -17,7 +18,9 @@ __DotnetRuntimeVersion="default"
 __ExtraCmakeArgs=
 __HostArch=x64
 __HostOS=Linux
+__IsMSBuildOnNETCoreSupported=0
 __ManagedBuild=1
+__ManagedBuildArgs=
 __NativeBuild=1
 __NumProc=1
 __PortableBuild=1
@@ -26,6 +29,8 @@ __RootBinDir="$__RepoRootDir"/artifacts
 __RuntimeSourceFeed=
 __RuntimeSourceFeedKey=
 __SkipConfigure=0
+__SkipGenerateVersion=0
+__StaticLibLink=1
 __TargetOS=Linux
 __Test=0
 __TestArgs=
@@ -38,10 +43,15 @@ usage_list+=("-test: run xunit tests")
 
 handle_arguments() {
 
-    case "$1" in
+    lowerI="$(echo "$1" | tr "[:upper:]" "[:lower:]")"
+    case "$lowerI" in
         architecture|-architecture|-a)
             BuildArch="$(echo "$2" | tr "[:upper:]" "[:lower:]")"
             __ShiftArgs=1
+            ;;
+
+        -binarylog|-bl|-clean|-integrationtest|-pack|-performancetest|-pipelineslog|-pl|-preparemachine|-publish|-r|-rebuild|-restore|-sign)
+            __ManagedBuildArgs="$__ManagedBuildArgs $1"
             ;;
 
         configuration|-configuration|-c)
@@ -52,6 +62,15 @@ handle_arguments() {
                 __BuildType=Checked
             fi
 
+            __ShiftArgs=1
+            ;;
+
+        -clean|-binarylog|-bl|-pipelineslog|-pl|-restore|-r|-rebuild|-pack|-integrationtest|-performancetest|-sign|-publish|-preparemachine)
+            __ManagedBuildArgs="$__ManagedBuildArgs $1"
+            ;;
+
+        -warnaserror|-nodereuse)
+            __ManagedBuildArgs="$__ManagedBuildArgs $1 $2"
             __ShiftArgs=1
             ;;
 
@@ -78,7 +97,6 @@ handle_arguments() {
 }
 
 source "$__RepoRootDir"/eng/native/build-commons.sh
-
 
 __LogsDir="$__RootBinDir/log/$__BuildType"
 __ConfigTriplet="$__TargetOS.$__BuildArch.$__BuildType"
@@ -113,7 +131,7 @@ fi
 
 if [[ "$__ManagedBuild" == 1 ]]; then
     echo "Commencing managed build for $__BuildType in $__RootBinDir/bin"
-    "$__RepoRootDir/eng/common/build.sh" --build --configuration "$__BuildType" $__CommonMSBuildArgs $__UnprocessedBuildArgs
+    "$__RepoRootDir/eng/common/build.sh" --build --configuration "$__BuildType" "$__CommonMSBuildArgs" "$__ManagedBuildArgs" $__UnprocessedBuildArgs
     if [ "$?" != 0 ]; then
         exit 1
     fi
@@ -214,15 +232,15 @@ if [[ "$__Test" == 1 ]]; then
       "$__RepoRootDir/eng/common/build.sh" \
         --test \
         --configuration "$__BuildType" \
-        /bl:$__LogsDir/Test.binlog \
+        /bl:"$__LogsDir"/Test.binlog \
         /p:BuildArch="$__BuildArch" \
         /p:PrivateBuildPath="$__PrivateBuildPath" \
         /p:DotnetRuntimeVersion="$__DotnetRuntimeVersion" \
         /p:DotnetRuntimeDownloadVersion="$__DotnetRuntimeDownloadVersion" \
         /p:RuntimeSourceFeed="$__RuntimeSourceFeed" \
         /p:RuntimeSourceFeedKey="$__RuntimeSourceFeedKey" \
-        $__CommonMSBuildArgs \
-        $__TestArgs
+        "$__CommonMSBuildArgs" \
+        "$__TestArgs"
 
       if [ $? != 0 ]; then
           exit 1
