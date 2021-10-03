@@ -131,7 +131,7 @@ fi
 
 if [[ "$__ManagedBuild" == 1 ]]; then
     echo "Commencing managed build for $__BuildType in $__RootBinDir/bin"
-    "$__RepoRootDir/eng/common/build.sh" --build --configuration "$__BuildType" "$__CommonMSBuildArgs" "$__ManagedBuildArgs" $__UnprocessedBuildArgs
+    "$__RepoRootDir/eng/common/build.sh" --build --configuration "$__BuildType" "$__CommonMSBuildArgs" $__ManagedBuildArgs $__UnprocessedBuildArgs
     if [ "$?" != 0 ]; then
         exit 1
     fi
