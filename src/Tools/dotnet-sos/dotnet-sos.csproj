@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
     <ToolCommandName>dotnet-sos</ToolCommandName>
     <RootNamespace>Microsoft.Diagnostics.Tools.SOS</RootNamespace>
     <Description>Diagnostic SOS installer</Description>
